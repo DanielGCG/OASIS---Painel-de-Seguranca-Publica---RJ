@@ -20,7 +20,7 @@ async function importar() {
     try {
         Model = require(`../bd/modelos/${nomeModel}`);
     } catch (erro) {
-        console.error(`Não foi possível carregar o model "${nomeModel}".`);
+        console.error(`Não foi possível carregar o modelo "${nomeModel}".`);
         console.error(`Verifique se existe o arquivo: bd/modelos/${nomeModel}.js`);
 
         process.exitCode = 1;
