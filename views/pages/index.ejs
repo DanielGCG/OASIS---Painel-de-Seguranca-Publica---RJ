@@ -1,0 +1,191 @@
+<main class="min-vh-100 py-md-4">
+
+    <div class="container-fluid px-3 px-md-5">
+
+        <!-- Cabeçalho -->
+        <header class="mb-4">
+            <p class="text-uppercase fw-bold small mb-2" style="letter-spacing: 1.8px; color: #fed085">
+                OÁSIS / RIO DE JANEIRO
+            </p>
+
+            <h1 class="display-1 fw-bold mb-2 titulo">
+                Painel de Segurança Pública
+            </h1>
+
+            <p class="text-secondary mb-0">
+                Explore estatísticas de segurança pública no Rio de Janeiro.
+            </p>
+        </header>
+
+
+        <!-- Controles -->
+        <section class="border-top border-bottom py-3 mb-0" aria-label="Filtros do mapa">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+
+            <div class="d-flex flex-wrap gap-2" id="seletorTipoAcao">
+
+                <button
+                    type="button"
+                    class="btn btn-dark rounded-0 botao-modo"
+                    data-tipo="tiroteio">
+                    Tiroteios
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-0 botao-modo"
+                    data-tipo="roubo">
+                    Roubos
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-0 botao-modo"
+                    data-tipo="homicidio">
+                    Homicídios
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-0 botao-modo"
+                    data-tipo="outros">
+                    Outros crimes
+                </button>
+
+            </div>
+
+                <button id="botaoBatalhoes" class="btn btn-outline rounded-0" style="border-color: #fed085; color: #fed085;">
+                    Ver por batalhão
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Resumo -->
+        <section class="border-bottom py-3" aria-live="polite">
+
+            <div class="d-flex flex-wrap gap-4 gap-md-5">
+
+                <div>
+                    <strong id="totalOcorrencias" class="d-block fs-2 fw-bold">
+                        --
+                    </strong>
+
+                    <span class="text-uppercase text-secondary small">
+                        registros
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Mapa -->
+        <section id="secaoMapa" class="position-relative mt-4">
+
+
+            <!-- Painel de batalhões -->
+            <aside id="painelBatalhoes" class="painel-batalhoes d-none position-absolute top-0 end-0 m-3 bg-white shadow p-3">
+
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+
+                    <h2 class="h4 fw-bold mb-0">
+                        Ocorrências por batalhão
+                    </h2>
+
+                    <button id="fecharBatalhoes" class="btn-close" aria-label="Fechar"></button>
+
+                </div>
+
+                <div id="listaBatalhoes"></div>
+
+            </aside>
+
+
+            <!-- Aviso -->
+            <div id="avisoMapa" class="d-none position-absolute top-50 start-50 translate-middle bg-black shadow px-4 py-3 text-center" style="z-index: 600; max-width: 360px;"></div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<!-- ======== ESTILOS ======== -->
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<!-- ======== SCRIPTS ======== -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
+
+<script src="/js/mapa.js"></script>
+
+<script>
+    const botoesModo = document.querySelectorAll('.botao-modo');
+
+    botoesModo.forEach(botao => {
+        botao.addEventListener('click', () => {
+
+            const tipo = botao.dataset.tipo;
+
+            botoesModo.forEach(b => {
+                b.classList.remove('btn-dark');
+                b.classList.add('btn-outline-secondary');
+            });
+
+            botao.classList.remove('btn-outline-secondary');
+            botao.classList.add('btn-dark');
+
+            atualizarVisualizacao(tipo);
+        });
+    });
+
+    function atualizarVisualizacao(tipo) {
+        switch (tipo) {
+
+            case 'tiroteio':
+                exibirTiroteios();
+                break;
+
+            case 'roubo':
+                exibirRoubos();
+                break;
+
+            case 'homicidio':
+                exibirHomicidios();
+                break;
+
+            case 'outros':
+                exibirOutrosCrimes();
+                break;
+        }
+    }
+
+    function exibirTiroteios() {
+        iniciarMapaTiroteios();
+    }
+
+    function exibirRoubos() {
+        limparVisualizacao();
+        console.log('Visualização de roubos ainda não implementada');
+    }
+
+    function exibirHomicidios() {
+        limparVisualizacao();
+        console.log('Visualização de homicídios ainda não implementada');
+    }
+
+    function exibirOutrosCrimes() {
+        limparVisualizacao();
+        console.log('Visualização de outros crimes ainda não implementada');
+    }
+
+    atualizarVisualizacao('tiroteio');
+</script>
