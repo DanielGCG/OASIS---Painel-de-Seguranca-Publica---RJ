@@ -9,6 +9,7 @@ Aplicação web para visualização de ocorrências de segurança pública no es
 - **Sequelize**: conexão e acesso ao banco de dados.
 - **MariaDB**: banco de dados relacional.
 - **Leaflet**: mapa interativo.
+- **GeoJSON**: representação das divisões entre áreas CISP.
 - **Proj4**: conversão de coordenadas geográficas para UTM.
 - **csv-parse**: leitura e conversão dos arquivos CSV.
 - **Bootstrap**: componentes e estilos da interface.
@@ -191,6 +192,7 @@ As rotas do servidor são registradas em [`server.js`](./server.js):
 | `GET` | `/` | Renderiza o painel principal. |
 | `GET` | `/api/ping` | Retorna `{ "message": "pong" }` para verificar se a API está disponível. |
 | `GET` | `/api/tiroteios/ocorrencias_mapa` | Retorna latitude e longitude das ocorrências, com cache de uma hora. |
+| `GET` | `/cisp.geojson` | Arquivo estático com as divisões geográficas e os números reais das CISP. |
 
 Exemplo:
 
@@ -222,10 +224,11 @@ O endpoint do mapa retorna uma estrutura semelhante a:
 │   └── modelos/
 │       └── ocorrencias_tiroteio.js    # Modelo Sequelize das ocorrências
 ├── dados_estaticos/
-│   └── ocorrencias_limpas.csv         # CSV de exemplo
+│   └── ocorrencias_limpas.csv
 ├── public/
 │   ├── css/index.css                  # Estilos do painel
-│   └── js/mapa.js                     # Mapa, projeção e grade de ocorrências
+│   ├── js/mapa.js                     # Mapa, projeção e grade de ocorrências
+│   └── cisp.geojson                   # Divisões e números das áreas CISP
 ├── scripts/
 │   └── importar-csv.js                # Importador genérico de CSV
 ├── server/
