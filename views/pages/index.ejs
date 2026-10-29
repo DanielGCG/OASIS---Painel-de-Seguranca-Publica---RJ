@@ -55,8 +55,8 @@
 
             </div>
 
-                <button id="botaoBatalhoes" class="btn btn-outline rounded-0" style="border-color: #fed085; color: #fed085;">
-                    Ver por batalhão
+                <button id="botaoCisp" class="btn btn-outline rounded-0" style="border-color: #fed085; color: #fed085;">
+                    Mostrar divisões CISP
                 </button>
 
             </div>
@@ -186,6 +186,8 @@
         limparVisualizacao();
         console.log('Visualização de outros crimes ainda não implementada');
     }
+
+    document.getElementById('botaoCisp').addEventListener('click', alternarAreasCisp);
 
     atualizarVisualizacao('tiroteio');
 </script>

@@ -19,6 +19,8 @@ const ORIGEM_Y = 7400000;
 // ======================================================
 
 let camadaGrade = null;
+let camadaCisp = null;
+let camadaRotulosCisp = null;
 
 // ======================================================
 // ESTADO
@@ -26,6 +28,14 @@ let camadaGrade = null;
 
 let pontosAtuais = [];
 let gradeAtual = new Map();
+
+function atualizarBotaoCisp(visivel, disponivel) {
+    const botao = document.getElementById('botaoCisp');
+    botao.disabled = !disponivel;
+    botao.textContent = visivel
+        ? 'Ocultar divisões CISP'
+        : 'Mostrar divisões CISP';
+}
 
 function criarMapa() {
     if (mapa) return;
@@ -49,6 +59,33 @@ function criarMapa() {
     }).addTo(mapa);
 
     camadaGrade = L.layerGroup().addTo(mapa);
+    camadaRotulosCisp = L.layerGroup();
+    camadaCisp = L.geoJSON(null, {
+        style: {
+            color: '#1976d2',
+            weight: 2,
+            opacity: 0.95,
+            fill: false
+        },
+        onEachFeature: (feature, camada) => {
+            const coordenadas = feature.geometry.coordinates
+                .flat()
+                .map(([longitude, latitude]) => [latitude, longitude]);
+            const limites = L.latLngBounds(coordenadas);
+            const rotulo = L.marker(limites.getCenter(), {
+                icon: L.divIcon({
+                    className: 'rotulo-cisp',
+                    html: feature.properties.cisp,
+                    iconSize: [28, 24],
+                    iconAnchor: [14, 12]
+                }),
+                interactive: false
+            });
+
+            camadaRotulosCisp.addLayer(rotulo);
+        }
+    });
+    atualizarBotaoCisp(false, true);
 }
 
 function removerMapa() {
@@ -58,12 +95,42 @@ function removerMapa() {
     }
 
     camadaGrade = null;
+    camadaCisp = null;
+    camadaRotulosCisp = null;
     pontosAtuais = [];
     gradeAtual = new Map();
     document.getElementById('totalOcorrencias').textContent = '--';
+    atualizarBotaoCisp(false, false);
 
     const elementoMapa = document.getElementById('mapa');
     if (elementoMapa) elementoMapa.remove();
+}
+
+async function carregarAreasCisp() {
+    const resposta = await fetch('/cisp.geojson');
+
+    if (!resposta.ok) {
+        throw new Error('Não foi possível carregar as divisões CISP.');
+    }
+
+    const geojson = await resposta.json();
+    camadaCisp.clearLayers();
+    camadaRotulosCisp.clearLayers();
+    camadaCisp.addData(geojson);
+}
+
+function alternarAreasCisp() {
+    if (!mapa || !camadaCisp || !camadaRotulosCisp) return;
+
+    if (mapa.hasLayer(camadaCisp)) {
+        mapa.removeLayer(camadaCisp);
+        mapa.removeLayer(camadaRotulosCisp);
+        atualizarBotaoCisp(false, true);
+    } else {
+        camadaCisp.addTo(mapa);
+        camadaRotulosCisp.addTo(mapa);
+        atualizarBotaoCisp(true, true);
+    }
 }
 
 // ======================================================
@@ -255,6 +322,9 @@ async function receberPontos() {
         }
 
         const dados = await resposta.json();
+        carregarAreasCisp().catch(erro => {
+            console.error('Erro ao carregar áreas CISP:', erro);
+        });
 
         if (!mapa) return;
 

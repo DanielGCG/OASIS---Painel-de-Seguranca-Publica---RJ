@@ -24,6 +24,21 @@ body {
     overflow: auto;
 }
 
+.rotulo-cisp {
+    align-items: center;
+    background: #fff;
+    border: 2px solid #1976d2;
+    padding: 0px;
+    margin: 0px;
+    color: #12549a;
+    display: flex;
+    font-size: 10px;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1,2;
+    text-align: center;
+}
+
 @media (max-width: 760px) {
     .titulo {
         font-size: 3rem;
