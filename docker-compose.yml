@@ -1,0 +1,22 @@
+# Docker compose apenas para executar o site
+
+services:
+  painel:
+    build: .
+    ports:
+    - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: postgis/postgis:18-3.6
+    environment:
+      POSTGRES_USER: oasis2_user     
+      POSTGRES_PASSWORD: oasis22026   
+      POSTGRES_DB: oasis_seguranca            
+    volumes:
+      - ./bd:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/postgresql
+
+volumes:
+  db-data:

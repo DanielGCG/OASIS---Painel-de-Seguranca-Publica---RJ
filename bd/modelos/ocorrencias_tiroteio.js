@@ -2,12 +2,12 @@ const { DataTypes } = require('sequelize');
 const banco = require('../conexao');
 
 const Ocorrencias_tiroteio = banco.define('ocorrencias_tiroteio', {
-    id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true},
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     data_hora: { type: DataTypes.DATE, allowNull: false },
-    ano: { type: DataTypes.SMALLINT.UNSIGNED, allowNull: false },
+    ano: { type: DataTypes.SMALLINT, allowNull: false },
     mes: { type: DataTypes.STRING(7), allowNull: false },
-    dia_mes: { type: DataTypes.TINYINT.UNSIGNED, allowNull: false },
-    hora: { type: DataTypes.TINYINT.UNSIGNED, allowNull: false },
+    dia_mes: { type: DataTypes.SMALLINT, allowNull: false },
+    hora: { type: DataTypes.SMALLINT, allowNull: false },
     dia_semana: { type: DataTypes.STRING(3), allowNull: false },
     periodo_do_dia: { type: DataTypes.STRING(20), allowNull: false },
     municipio: { type: DataTypes.STRING(120), allowNull: true },
@@ -24,7 +24,7 @@ const Ocorrencias_tiroteio = banco.define('ocorrencias_tiroteio', {
     chacina: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     unidade_policial: { type: DataTypes.STRING(255), allowNull: true },
     batalhao_responsavel: { type: DataTypes.STRING(255), allowNull: true },
-    numero_forcas: { type: DataTypes.TINYINT.UNSIGNED, allowNull: false, defaultValue: 0 },
+    numero_forcas: { type: DataTypes.SMALLINT, allowNull: false, defaultValue: 0 },
     fonte: { type: DataTypes.STRING(180), allowNull: true },
     adicionado_no_banco_em: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
     atualizado_no_banco_em: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },

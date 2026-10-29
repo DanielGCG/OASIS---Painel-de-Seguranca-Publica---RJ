@@ -7,7 +7,7 @@ const banco = new Sequelize(
     {
         host: process.env.BANCO_HOST,
         port: Number(process.env.BANCO_PORTA),
-        dialect: 'mariadb',
+        dialect: 'postgres',
         logging: process.env.BANCO_LOG === 'true' ? console.log : false,
         define: {
             underscored: true,
