@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "importar": "node scripts/importar-csv.js"
+    "importar": "node scripts/importar-csv.js",
+    "sincronizar": "node scripts/sincronizar.js"
   },
   "author": "",
   "license": "ISC",
