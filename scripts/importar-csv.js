@@ -73,24 +73,47 @@ async function importar() {
     }
 
     // Converte valores do CSV
-    function converterValor(valor) {
-        if (valor === '') {
-            return null;
+    function converterValor(valor, coluna) {
+        const atributoTipo = Model.rawAttributes[coluna].type.key;
+        let valorNormalizado = valor;
+
+        // Normaliza o valor removendo espaços em branco e letras maiúsculas
+        if (typeof valor === 'string'){
+            valorNormalizado = valor.trim();
         }
 
-        if (typeof valor === 'string') {
-            const valorNormalizado = valor.trim().toLowerCase();
+        // Verificação e tratamento de valor ausente
+        if (valorNormalizado === '' || valorNormalizado === null || valorNormalizado === undefined) {
+            
+            if (['STRING', 'TEXT', 'UUID', 'CHAR'].includes(atributoTipo)) {
+                return '';
+            }
+            
+            else if (['INTEGER', 'SMALLINT', 'BIGINT', 'FLOAT', 'DOUBLE', 'DECIMAL', 'REAL'].includes(atributoTipo)) {
+                return 0;
+            }
+            
+            else if (atributoTipo === 'BOOLEAN') {
+                return false;
+            }
+            
+            else return null;
 
-            if (valorNormalizado === 'true') {
+        }
+
+        // Converte o valor booleano correto
+        if (atributoTipo === 'BOOLEAN' && typeof valorNormalizado === 'string') {
+            valorNormalizado = valorNormalizado.toLowerCase();
+            if (valorNormalizado === 'true' || valorNormalizado === '1' || valorNormalizado === 'sim' || valorNormalizado === 's') {
                 return true;
             }
 
-            if (valorNormalizado === 'false') {
+            else{
                 return false;
             }
         }
 
-        return valor;
+        return valorNormalizado;
     }
 
     // Mantém somente as colunas existentes no model
@@ -99,7 +122,7 @@ async function importar() {
 
         for (const coluna of colunasModel) {
             if (Object.prototype.hasOwnProperty.call(linha, coluna)) {
-                registro[coluna] = converterValor(linha[coluna]);
+                registro[coluna] = converterValor(linha[coluna], coluna);
             }
         }
 
