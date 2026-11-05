@@ -7,7 +7,8 @@ Aplicação web para visualização de ocorrências de segurança pública no es
 - **Node.js** e **Express**: servidor HTTP e rotas da aplicação.
 - **EJS** e **express-ejs-layouts**: renderização das páginas.
 - **Sequelize**: conexão e acesso ao banco de dados.
-- **MariaDB**: banco de dados relacional.
+- **PostgreSQL**: banco de dados relacional.
+- **PostGIS**: extensão do postgre para dados geoespaciais
 - **Leaflet**: mapa interativo.
 - **GeoJSON**: representação das divisões entre áreas CISP.
 - **Proj4**: conversão de coordenadas geográficas para UTM.
@@ -16,48 +17,42 @@ Aplicação web para visualização de ocorrências de segurança pública no es
 
 ## Pré-requisitos
 
-Instale os seguintes componentes antes de iniciar:
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) (versão desktop recomendada, mas é possível utilizar a versão CLI).
 
-1. [Node.js](https://nodejs.org/) (versão LTS recomendada).
-2. [MariaDB](https://mariadb.org/) em execução.
-3. Um cliente MariaDB/MySQL, como o `mariadb`, `mysql` ou uma ferramenta gráfica.
-
-Verifique as instalações:
-
-```bash
-node --version
-npm --version
-mariadb --version
-```
+#### Principais fontes de dados:
+- [Fogocruzado](https://api.fogocruzado.org.br/search)
+- [Ispdados](https://www.ispdados.rj.gov.br/estatistica.html)
 
 ## Instalação
-
 Clone ou copie o projeto e entre na pasta raiz:
 
 ```bash
 git clone https://github.com/DanielGCG/OASIS---Painel-de-Seguranca-Publica---RJ.git
 ```
 
-Instale as dependências definidas em `package.json`:
+Abra o terminal do docker na pasta do projeto, rode o seguinte comando para criar os containers:
 
 ```bash
-npm install
+docker compose -f .\docker-compose-dev.yml up
 ```
-
-O comando instala, entre outras, as dependências do Express, Sequelize, driver MariaDB, parser de CSV, EJS, Leaflet relacionado ao frontend e o Nodemon para desenvolvimento.
+OBS: Caso queira apenas rodar o site, utilize:
+```bash
+docker compose up
+```
+O comando cria os containers dockers e instala automaticamente as dependencias do banco de dados (no container db) e as do site (no container painel)
 
 ## Configuração do ambiente
 
-Crie um arquivo `.env` na raiz do projeto. Ele deve conter as credenciais do MariaDB e a porta usada pelo servidor:
+Crie um arquivo `.env` na raiz do projeto. Ele deve conter as credenciais do PostgreSQL e a porta usada pelo servidor:
 
 ```env
 PORT=3000
 
 BANCO_NOME=oasis_seguranca
-BANCO_USUARIO=oasis_app
-BANCO_SENHA=sua_senha
-BANCO_HOST=localhost
-BANCO_PORTA=3306
+BANCO_USUARIO=oasis2_user
+BANCO_SENHA=oasis22026
+BANCO_HOST=db
+BANCO_PORTA=5432
 
 # Opcional: use true para exibir no console as consultas SQL do Sequelize.
 BANCO_LOG=false
@@ -68,42 +63,38 @@ BANCO_LOG=false
 | Variável | Obrigatória | Descrição |
 | --- | --- | --- |
 | `PORT` | Não | Porta HTTP da aplicação. O padrão é `3000`. |
-| `BANCO_NOME` | Sim | Nome do banco MariaDB. |
+| `BANCO_NOME` | Sim | Nome do banco PostgreSQL. |
 | `BANCO_USUARIO` | Sim | Usuário usado pelo Sequelize. |
 | `BANCO_SENHA` | Sim | Senha do usuário do banco. |
-| `BANCO_HOST` | Sim | Endereço do servidor MariaDB. |
-| `BANCO_PORTA` | Sim | Porta do MariaDB, normalmente `3306`. |
+| `BANCO_HOST` | Sim | Endereço do servidor PostgreSQL. |
+| `BANCO_PORTA` | Sim | Porta do PostgreSQl, normalmente `5432`. |
 | `BANCO_LOG` | Não | Quando definido como `true`, habilita o log das consultas SQL. |
 
-Não publique o `.env` nem inclua credenciais reais no repositório. Crie um novo arquivo com os valores correspondentes ao seu ambiente.
+Não publique o `.env` nem inclua credenciais reais no repositório. Crie um novo arquivo com os valores correspondentes ao seu ambiente, mas tenha em mente que também deve modificar os arquivos docker-compose com as novas variáveis de ambiente.
 
 ## Banco de dados
 
-O script [`bd/01.sql`](./bd/01.sql) cria o banco `oasis_seguranca` e a tabela `ocorrencias_tiroteio`.
+O script `importar` é utilizado para popular o banco com os dados presentes nos datasets, que **devem estar no diretório raíz** do projeto. 
 
-Execute o script com um usuário que tenha permissão para criar banco e tabela:
+Execute o script no terminal do docker com o seguinte comando:
 
 ```bash
-mariadb -u root -p < bd/01.sql
+docker compose exec painel npm run importar -- <modelo> <dataset>.csv
 ```
 
-Se o usuário configurado no `.env` ainda não existir, crie-o no MariaDB e conceda acesso ao banco:
+Caso queira sincronizar os modelos em Sequelize com o banco de dados utilize o script `sincronizar` com o comando:
 
-```sql
-CREATE USER 'oasis_app'@'localhost' IDENTIFIED BY 'sua_senha';
-GRANT ALL PRIVILEGES ON oasis_seguranca.* TO 'oasis_app'@'localhost';
-FLUSH PRIVILEGES;
+```bash
+docker compose exec painel npm run sincronizar <modelo>
 ```
-
-O projeto ainda não executa migrações automaticas nem chama `sequelize.sync()`: a estrutura deve ser criada pelo script SQL.
 
 ## Modelo do banco e Sequelize
 
 O acesso ao banco está organizado nestes arquivos:
 
-- [`bd/conexao.js`](./bd/conexao.js): cria a instância do Sequelize usando as variáveis do `.env`, configura o dialeto `mariadb`, host, porta e logging.
+- [`bd/conexao.js`](./bd/conexao.js): cria a instância do Sequelize usando as variáveis do `.env`, configura o dialeto `postgresql`, host, porta e logging.
 - [`bd/modelos/ocorrencias_tiroteio.js`](./bd/modelos/ocorrencias_tiroteio.js): define o modelo `ocorrencias_tiroteio`, seus tipos, campos obrigatórios, valores padrão e índices.
-- [`bd/01.sql`](./bd/01.sql): define fisicamente o banco e a tabela no MariaDB.
+- [`bd/01.sql`](./bd/01.sql): define fisicamente o banco e a tabela no PostgreSQL.
 
 O modelo usa `timestamps: false` porque a tabela possui os campos próprios `adicionado_no_banco_em` e `atualizado_no_banco_em`. A opção `underscored: true` está configurada globalmente na conexão para manter o padrão de nomes com `_`.
 
@@ -122,20 +113,14 @@ O CSV deve:
 - usar valores vazios para campos sem informação;
 - representar booleanos como `true` ou `false` (a conversão não diferencia maiúsculas de minúsculas).
 
-Os arquivos para importação devem ser deixados em `./dados_estaticos/nome-do-aquivo.csv` para que o script o encontre. Colunas presentes no CSV que não existem no modelo são informadas no console e ignoradas. Colunas do modelo ausentes no CSV não são adicionadas ao registro importado.
+Os arquivos para importação devem ser deixados na pasta raíz para que o script o encontre. Colunas presentes no CSV que não existem no modelo são informadas no console e ignoradas. Colunas do modelo ausentes no CSV não são adicionadas ao registro importado.
 
 ### Comando de importação
 
 Na raiz do projeto, execute:
 
 ```bash
-npm run importar -- nome_do_modelo dados_estaticos/nome-do-aquivo.csv
-```
-
-No Windows, também é possível informar o caminho completo entre aspas:
-
-```powershell
-npm run importar -- nome_do_modelo "C:\caminho\para\nome-do-aquivo.csv"
+npm run importar -- nome_do_modelo nome-do-arquivo.csv
 ```
 
 O primeiro argumento (`nome_do_modelo`) é o nome do arquivo do modelo sem o `.js`. O segundo argumento é o caminho do CSV.
@@ -146,33 +131,11 @@ Durante a importação, o script:
 2. valida se o arquivo CSV existe;
 3. lê o CSV e ignora linhas vazias;
 4. mantém somente colunas existentes no modelo;
-5. converte valores vazios para `null` e `true`/`false` para booleanos;
+5. Trata valors vazios e `true`/`false` para booleanos;
 6. atualiza registros existentes com o mesmo `id`;
 7. exibe no console as colunas, os lotes e o resultado da operação.
 
 Em registros repetidos, as colunas atualizadas são todas as colunas do modelo, exceto `id` e `adicionado_no_banco_em`. Portanto, o campo `id` precisa ser único e compatível com a chave primária da tabela.
-
-## Executando a aplicação
-
-### Ambiente de desenvolvimento
-
-```bash
-npm run dev
-```
-
-Esse comando inicia o servidor com Nodemon, que reinicia a aplicação quando os arquivos são alterados.
-
-### Execução direta
-
-```bash
-node server.js
-```
-
-Com o `.env` configurado e o banco disponível, acesse:
-
-```text
-http://localhost:PORT
-```
 
 ## Funcionalidades atuais
 
@@ -192,7 +155,9 @@ As rotas do servidor são registradas em [`server.js`](./server.js):
 | `GET` | `/` | Renderiza o painel principal. |
 | `GET` | `/api/ping` | Retorna `{ "message": "pong" }` para verificar se a API está disponível. |
 | `GET` | `/api/tiroteios/ocorrencias_mapa` | Retorna latitude e longitude das ocorrências, com cache de uma hora. |
+| `GET` | `/api/roubos/roubo_acumulado/<ano>` | Retorna a quantia acumulada (soma) de roubos agrupados por CISP e ano.|
 | `GET` | `/cisp.geojson` | Arquivo estático com as divisões geográficas e os números reais das CISP. |
+
 
 Exemplo:
 
@@ -220,11 +185,13 @@ O endpoint do mapa retorna uma estrutura semelhante a:
 .
 ├── bd/
 │   ├── 01.sql                         # Criação do banco e da tabela
-│   ├── conexao.js                     # Conexão Sequelize/MariaDB
+│   ├── conexao.js                     # Conexão Sequelize/PostgreSQL
 │   └── modelos/
 │       └── ocorrencias_tiroteio.js    # Modelo Sequelize das ocorrências
+|       └── evolucao_mensal_cisp.js    # Modelo Sequelize das ocorrências
 ├── dados_estaticos/
 │   └── ocorrencias_limpas.csv
+│   └── evolucao_mensal_cisp.csv
 ├── public/
 │   ├── css/index.css                  # Estilos do painel
 │   ├── js/mapa.js                     # Mapa, projeção e grade de ocorrências
