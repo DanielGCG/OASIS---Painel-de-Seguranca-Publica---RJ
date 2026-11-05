@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Segurança Pública</title>
+    <title><%= typeof title !== 'undefined' ? title : 'Painel de Segurança Pública - RJ' %></title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <meta name="description" content="">
+    <meta name="description" content="Explore estatísticas de segurança pública no Rio de Janeiro.">
 
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#004a99">
+    <meta name="theme-color" content="#20201f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/6686/6686693.png">
@@ -19,15 +19,20 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <style>
-    </style>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Estilos Customizados -->
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/slider.css">
 </head>
 
 <body>
     <%- body %>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>

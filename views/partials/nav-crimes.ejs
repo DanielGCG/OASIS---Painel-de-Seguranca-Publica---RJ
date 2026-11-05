@@ -1,0 +1,9 @@
+<!-- Navegação entre Tipos de Crime (Bootstrap) -->
+<section class="border-top border-bottom py-3" aria-label="Indicador de crime exibido">
+    <div class="d-flex flex-wrap gap-2">
+        <a href="/tiroteios" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'tiroteios') ? 'btn-dark' : 'btn-outline-secondary' %>">Tiroteios</a>
+        <a href="/roubos" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'roubos') ? 'btn-dark' : 'btn-outline-secondary' %>">Roubos</a>
+        <a href="/homicidios" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'homicidios') ? 'btn-dark' : 'btn-outline-secondary' %>">Homicídios</a>
+        <a href="/outros" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'outros') ? 'btn-dark' : 'btn-outline-secondary' %>">Outros crimes</a>
+    </div>
+</section>
