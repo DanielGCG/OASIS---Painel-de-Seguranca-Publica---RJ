@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "importar": "node scripts/importar-csv.js"
+    "dev": "nodemon -L --watch . --ext js server.js",
+    "importar": "node scripts/importar-csv.js",
+    "sincronizar": "node scripts/sincronizar.js"
   },
   "author": "",
   "license": "ISC",

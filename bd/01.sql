@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS ocorrencias_tiroteio (
     id SERIAL PRIMARY KEY,
     data_hora TIMESTAMP NOT NULL,
     ano SMALLINT NOT NULL,
-    mes VARCHAR(7) NOT NULL,
+    mes SMALLINT NOT NULL,
     dia_mes SMALLINT NOT NULL,
     hora SMALLINT NOT NULL,
     dia_semana VARCHAR(3) NOT NULL,

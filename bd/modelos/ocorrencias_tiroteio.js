@@ -5,7 +5,7 @@ const Ocorrencias_tiroteio = banco.define('ocorrencias_tiroteio', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     data_hora: { type: DataTypes.DATE, allowNull: false },
     ano: { type: DataTypes.SMALLINT, allowNull: false },
-    mes: { type: DataTypes.STRING(7), allowNull: false },
+    mes: { type: DataTypes.SMALLINT, allowNull: false },
     dia_mes: { type: DataTypes.SMALLINT, allowNull: false },
     hora: { type: DataTypes.SMALLINT, allowNull: false },
     dia_semana: { type: DataTypes.STRING(3), allowNull: false },
