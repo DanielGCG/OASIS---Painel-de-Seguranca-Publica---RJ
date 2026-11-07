@@ -6,13 +6,13 @@
 
     // Escala de cores do mapa de calor
     const TABELA_CORES = [
-        { min: 0.85, cor: '#4a0404' },
-        { min: 0.70, cor: '#800000' },
-        { min: 0.55, cor: '#b71c1c' },
-        { min: 0.40, cor: '#d9534f' },
-        { min: 0.30, cor: '#ef8354' },
-        { min: 0.20, cor: '#f5d094' },
-        { min: 0.10, cor: '#f8e5c5' }
+        { ints: 0.85, cor: '#4a0404' },
+        { ints: 0.70, cor: '#800000' },
+        { ints: 0.55, cor: '#b71c1c' },
+        { ints: 0.40, cor: '#d9534f' },
+        { ints: 0.30, cor: '#ef8354' },
+        { ints: 0.20, cor: '#f5d094' },
+        { ints: 0.10, cor: '#f8e5c5' }
     ];
 
     // Elementos da tela
@@ -54,7 +54,7 @@
         const intensidade = Math.log1p(valor) / Math.log1p(maximo);
 
         for (let i = 0; i < TABELA_CORES.length; i++) {
-            if (intensidade >= TABELA_CORES[i].min) {
+            if (intensidade >= TABELA_CORES[i].ints) {
                 return TABELA_CORES[i].cor;
             }
         }
