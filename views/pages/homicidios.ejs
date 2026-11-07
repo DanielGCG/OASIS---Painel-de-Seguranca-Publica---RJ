@@ -1,0 +1,40 @@
+<main class="min-vh-100 py-md-4">
+    <div class="container-fluid px-3 px-md-5">
+
+        <!-- Cabeçalho -->
+        <%- include('../partials/header') %>
+
+        <!-- Seleção de Indicador / Crime -->
+        <%- include('../partials/nav-crimes') %>
+
+        <!-- Resumo do Crime -->
+        <section class="border-bottom py-3" aria-live="polite">
+            <div class="d-flex align-items-baseline gap-2">
+                <strong id="totalOcorrencias" class="fs-2 fw-bold">--</strong>
+                <span id="rotuloTotalOcorrencias" class="text-uppercase text-secondary small">registros</span>
+            </div>
+            <span class="text-secondary small">Fonte: ISP RJ &bull; Divisões Territoriais por CISP</span>
+        </section>
+
+        <!-- Mapa de Homicidios por CISP -->
+        <section class="position-relative mt-4">
+            <div id="mapa" class="mapa rounded-0"></div>
+            <div id="avisoMapa" class="d-none position-absolute top-50 start-50 translate-middle bg-black shadow px-4 py-3 text-center" style="z-index: 600; max-width: 380px;"></div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Scripts da página de homicídios -->
+<script src="/js/slider-anos.js"></script>
+<script src="/js/mapa-cisp.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    criarMapaCisp({
+        elementoId: 'mapa',
+        campoMetrica: 'total_homicidios',
+        urlDados: '/api/cisp/indicadores_mapa'
+    });
+});
+</script>

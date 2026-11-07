@@ -1,0 +1,70 @@
+/* Estilos do Controle de Intervalo de Anos */
+
+.slider-trilho {
+    position: relative;
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.slider-fundo {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background-color: #383836;
+}
+
+.slider-progresso {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #fed085;
+}
+
+.slider-alca {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    margin: 0;
+    transform: translateY(-50%);
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    pointer-events: none;
+}
+
+/* Seletores webkit / moz para alças do range */
+.slider-alca::-webkit-slider-runnable-track {
+    background: transparent;
+    border: none;
+}
+
+.slider-alca::-moz-range-track {
+    background: transparent;
+    border: none;
+}
+
+.slider-alca::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    pointer-events: auto;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fed085;
+    border: 2px solid #20201f;
+}
+
+.slider-alca::-moz-range-thumb {
+    pointer-events: auto;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fed085;
+    border: 2px solid #20201f;
+}
+

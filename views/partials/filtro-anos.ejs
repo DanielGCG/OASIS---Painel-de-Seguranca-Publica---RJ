@@ -1,0 +1,35 @@
+<!-- Filtro de Intervalo de Anos -->
+<section class="card bg-dark bg-opacity-75 border-secondary rounded-0 p-2" aria-label="Intervalo de anos">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span class="text-uppercase fw-bold small texto-destaque">
+            <i class="bi bi-calendar3 me-1"></i> Intervalo de anos
+        </span>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-0 fs-6 px-3 py-1 badge-destaque">
+                <span id="rotuloAnoInicio">----</span> até <span id="rotuloAnoFim">----</span>
+            </span>
+            <span id="badgeQtdAnos" class="badge bg-dark border border-secondary text-secondary small">-- anos</span>
+        </div>
+    </div>
+
+    <div class="slider-trilho my-1">
+        <div class="slider-fundo">
+            <div id="sliderProgresso" class="slider-progresso"></div>
+        </div>
+        <input type="range" id="sliderHandleA" class="slider-alca" min="0" max="0" value="0" aria-label="Ano inicial">
+        <input type="range" id="sliderHandleB" class="slider-alca" min="0" max="0" value="0" aria-label="Ano final">
+    </div>
+
+    <div class="d-flex justify-content-between small text-secondary mb-1">
+        <span id="spanMinAno">----</span>
+        <span id="spanMaxAno">----</span>
+    </div>
+
+    <div class="d-flex flex-wrap gap-1 align-items-center pt-2 border-top border-secondary">
+        <span class="small text-secondary me-2">Atalhos:</span>
+        <button type="button" class="btn btn-sm btn-dark rounded-0 botao-preset" data-preset="tudo">Todo o período</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-0 botao-preset" data-preset="ultimos3">Últimos 3 anos</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-0 botao-preset" data-preset="ultimo1">Último ano</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-0 botao-preset" data-preset="inicial">Primeiro ano</button>
+    </div>
+</section>

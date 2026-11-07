@@ -35,7 +35,7 @@ body {
     font-size: 10px;
     font-weight: 700;
     justify-content: center;
-    line-height: 1,2;
+    line-height: 1.2;
     text-align: center;
 }
 
@@ -48,4 +48,14 @@ body {
         min-height: 530px;
         height: 64vh;
     }
+}
+
+.texto-destaque {
+    color: #fed085;
+}
+
+.badge-destaque {
+    background-color: #2b2b2a;
+    color: #fed085;
+    border: 1px solid rgba(254, 208, 133, 0.4);
 }
