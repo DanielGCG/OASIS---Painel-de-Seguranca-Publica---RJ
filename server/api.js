@@ -6,7 +6,7 @@ const { Sequelize } = require('sequelize');
 
 // Variável para armazenar a resposta em cache
 let MapaTiroteiosCache = null;
-let MapaRoubosCache = null;
+let MapaRoubosCache = {};
 let MapaHomiCache = null;
 
 api.get('/ping', (req, res) => {
@@ -47,11 +47,36 @@ api.get('/tiroteios/ocorrencias_mapa', async (req, res) => {
     return res.json(cacheTiroteios);
 });
 
-// Roubos por CISP e ano
+// Consulta de numero de roubos acumulado num intervalo de anos, agrupado por CISP
 api.get('/roubos/roubo_acumulado', async (req, res) => {
+    // Exemplo: /api/roubos/roubo_acumulado?inicio=2010&fim=2020
+
+    // Parâmetros de intervalo de anos
+    const { inicio, fim } = req.query;
+
+    //Chave de cache para armazenar os resultados da consulta
+    const cacheKey = `${inicio || 'null'}-${fim || 'null'}`;
+
+    // Filtro
+    const filtro = {};
+    if (inicio && fim) {
+        filtro.ano = {
+            [Sequelize.Op.between]: [Number(inicio), Number(fim)]
+        }
+    }
+    else if (inicio) {
+        filtro.ano = {
+            [Sequelize.Op.gte]: Number(inicio)
+        }
+    }
+    else if (fim) {
+        filtro.ano = {
+            [Sequelize.Op.lte]: Number(fim)
+        }
+    }
     try {
-        if (MapaRoubosCache && Date.now() - MapaRoubosCache.timestamp < 60 * 60 * 1000) {
-            return res.json(MapaRoubosCache);
+        if (MapaRoubosCache[cacheKey] && Date.now() - MapaRoubosCache[cacheKey].timestamp < 60 * 60 * 1000) {
+            return res.json(MapaRoubosCache[cacheKey]);
         }
 
         const roubos = await Evolucao_mensal_cisp.findAll({
@@ -60,6 +85,7 @@ api.get('/roubos/roubo_acumulado', async (req, res) => {
                 'ano',
                 [Sequelize.fn('SUM', Sequelize.col('total_roubos')), 'total_roubos']
             ],
+            where: filtro,
             group: ['cisp', 'ano'],
             order: [['ano', 'ASC']],
             raw: true,
@@ -73,8 +99,8 @@ api.get('/roubos/roubo_acumulado', async (req, res) => {
 
         const anos = [...new Set(registros.map(r => r.ano))].sort((a, b) => a - b);
 
-        MapaRoubosCache = { timestamp: Date.now(), anos, registros };
-        return res.json(MapaRoubosCache);
+        MapaRoubosCache[cacheKey] = { timestamp: Date.now(), anos, registros };
+        return res.json(MapaRoubosCache[cacheKey]);
     } catch (error) {
         console.error('Erro ao buscar dados de roubos:', error);
         res.status(500).json({ error: 'Erro ao buscar dados de roubos' });
@@ -110,8 +136,8 @@ api.get('/roubos/total_homicidios', async (req, res) => {
         MapaHomiCache = { timestamp: Date.now(), anos, registros };
         return res.json(MapaHomiCache);
     } catch (error) {
-        console.error('Erro ao buscar dados de roubos:', error);
-        res.status(500).json({ error: 'Erro ao buscar dados de roubos' });
+        console.error('Erro ao buscar dados de homicídios:', error);
+        res.status(500).json({ error: 'Erro ao buscar dados de homicídios' });
     }
 });
 
