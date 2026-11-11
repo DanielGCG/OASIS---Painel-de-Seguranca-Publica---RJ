@@ -8,13 +8,16 @@
         <%- include('../partials/nav-crimes') %>
 
         <!-- Resumo do Crime -->
-        <section class="border-bottom py-3" aria-live="polite">
+        <section class="py-2" aria-live="polite">
             <div class="d-flex align-items-baseline gap-2">
                 <strong id="totalOcorrencias" class="fs-2 fw-bold">--</strong>
                 <span id="rotuloTotalOcorrencias" class="text-uppercase text-secondary small">registros</span>
             </div>
-            <span class="text-secondary small">Fonte: ISP RJ &bull; Divisões Territoriais por CISP</span>
+            <span class="text-secondary small">Fonte: ISP RJ &bull; Divisões Territoriais por CISP (Delegacias)</span>
         </section>
+
+        <!-- Intervalo de anos -->
+        <%- include('../partials/filtro-anos') %>
 
         <!-- Mapa de Homicidios por CISP -->
         <section class="position-relative mt-4">
@@ -34,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     criarMapaCisp({
         elementoId: 'mapa',
         campoMetrica: 'total_homicidios',
-        urlDados: '/api/cisp/indicadores_mapa'
+        urlDados: '/api/roubos/total_homicidios'
     });
 });
 </script>

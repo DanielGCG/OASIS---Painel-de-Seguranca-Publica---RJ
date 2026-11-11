@@ -248,7 +248,9 @@ function criarMapaCisp(config) {
     async function iniciar() {
         await carregarGeoJson();
         const dados = await carregarDadosApi();
-        if (dados && dados.anos && typeof inicializarSliderAnos === 'function') {
+        if (!dados) return;
+
+        if (dados.anos && typeof inicializarSliderAnos === 'function') {
             const slider = inicializarSliderAnos({
                 anos: dados.anos,
                 aoMudar: function (inicio, fim) {
@@ -258,8 +260,11 @@ function criarMapaCisp(config) {
             if (slider) {
                 const intervalo = slider.obterIntervalo();
                 atualizarCamadaPoligonos(intervalo.inicioAno, intervalo.fimAno);
+                return;
             }
         }
+
+        atualizarCamadaPoligonos();
     }
 
     iniciar();

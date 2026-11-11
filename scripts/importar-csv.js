@@ -45,6 +45,7 @@ async function importar() {
         columns: true,
         skip_empty_lines: true,
         bom: true,
+        delimiter: ';',
         trim: true
     });
 
@@ -84,19 +85,19 @@ async function importar() {
 
         // Verificação e tratamento de valor ausente
         if (valorNormalizado === '' || valorNormalizado === null || valorNormalizado === undefined) {
-            
+
             if (['STRING', 'TEXT', 'UUID', 'CHAR'].includes(atributoTipo)) {
                 return '';
             }
-            
+
             else if (['INTEGER', 'SMALLINT', 'BIGINT', 'FLOAT', 'DOUBLE', 'DECIMAL', 'REAL'].includes(atributoTipo)) {
                 return 0;
             }
-            
+
             else if (atributoTipo === 'BOOLEAN') {
                 return false;
             }
-            
+
             else return null;
 
         }

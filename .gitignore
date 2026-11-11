@@ -1,3 +1,4 @@
 .env
 dados_estaticos
 node_modules
+*.csv
