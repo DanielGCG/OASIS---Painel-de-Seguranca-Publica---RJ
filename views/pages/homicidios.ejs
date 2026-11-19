@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
     criarMapaCisp({
         elementoId: 'mapa',
         campoMetrica: 'total_homicidios',
+        campoTaxa: 'taxa_total_homicidios',
+        tetoEstatico: 200,
+        rotuloMetrica: 'homicídios registrados',
         urlDados: '/api/roubos/total_homicidios'
     });
 });
