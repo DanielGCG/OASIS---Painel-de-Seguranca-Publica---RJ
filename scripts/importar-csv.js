@@ -41,14 +41,16 @@ async function importar() {
     console.log(`Model: ${nomeModel}`);
     console.log(`CSV:   ${arquivo}`);
 
-    // Lê o CSV
+    // Lê o CSV e detecta o delimitador automaticamente (';' ou ',')
     const conteudo = fs.readFileSync(arquivo, 'utf8');
+    const primeiraLinha = conteudo.split(/\r?\n/, 1)[0] || '';
+    const delimitador = (primeiraLinha.split(';').length > primeiraLinha.split(',').length) ? ';' : ',';
 
     const linhas = parse(conteudo, {
         columns: true,
         skip_empty_lines: true,
         bom: true,
-        delimiter: ';',
+        delimiter: delimitador,
         trim: true
     });
 
