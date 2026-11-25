@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
     criarMapaCisp({
         elementoId: 'mapa',
         campoMetrica: 'total_roubos',
+        campoTaxa: 'taxa_total_roubos',
+        tetoEstatico: 5000,
+        rotuloMetrica: 'roubos registrados',
         urlDados: '/api/roubos/roubo_acumulado'
     });
 });

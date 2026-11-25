@@ -6,10 +6,13 @@ require('dotenv').config();
 const banco = require('../bd/conexao');
 
 async function importar() {
-    const [, , nomeModel, arquivoCsv] = process.argv;
+    const args = process.argv.slice(2);
+    const limpar = args.includes('--limpar') || args.includes('--truncate');
+    const positionalArgs = args.filter(a => !a.startsWith('--'));
+    const [nomeModel, arquivoCsv] = positionalArgs;
 
     if (!nomeModel || !arquivoCsv) {
-        console.error('Uso: npm run importar -- <model> <arquivo.csv>');
+        console.error('Uso: npm run importar -- <model> <arquivo.csv> [--limpar]');
         process.exitCode = 1;
         return;
     }
@@ -20,7 +23,7 @@ async function importar() {
     try {
         Model = require(`../bd/modelos/${nomeModel}`);
     } catch (erro) {
-        console.error(`Não foi possível carregar o modelo "${nomeModel}".`);
+        console.error(`Não foi possível carregar o modelo "${nomeModel}":`, erro);
         console.error(`Verifique se existe o arquivo: bd/modelos/${nomeModel}.js`);
 
         process.exitCode = 1;
@@ -114,6 +117,21 @@ async function importar() {
             }
         }
 
+        // Converte para número inteiro quando o tipo do banco for inteiro
+        if (['INTEGER', 'SMALLINT', 'BIGINT'].includes(atributoTipo)) {
+            const num = Math.round(Number(valorNormalizado));
+            return isNaN(num) ? 0 : num;
+        }
+
+        // Converte vírgula decimal para float
+        if (['FLOAT', 'DOUBLE', 'DECIMAL', 'REAL'].includes(atributoTipo)) {
+            if (typeof valorNormalizado === 'string') {
+                valorNormalizado = valorNormalizado.replace(',', '.');
+            }
+            const num = Number(valorNormalizado);
+            return isNaN(num) ? 0 : num;
+        }
+
         return valorNormalizado;
     }
 
@@ -137,6 +155,15 @@ async function importar() {
 
     const tamanhoLote = 5000;
     const totalLotes = Math.ceil(registros.length / tamanhoLote);
+
+    console.log('\nSincronizando com tabela no banco...');
+    await Model.sync({ alter: true });
+
+    if (limpar) {
+        console.log(`Limpando tabela "${Model.tableName || nomeModel}" antes de importar...`);
+        await Model.destroy({ where: {}, truncate: true, restartIdentity: true });
+        console.log('Tabela limpa com sucesso.');
+    }
 
     console.log('\nIniciando importação...\n');
 

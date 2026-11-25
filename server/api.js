@@ -83,7 +83,9 @@ api.get('/roubos/roubo_acumulado', async (req, res) => {
             attributes: [
                 'cisp',
                 'ano',
-                [Sequelize.fn('SUM', Sequelize.col('total_roubos')), 'total_roubos']
+                [Sequelize.fn('SUM', Sequelize.col('total_roubos')), 'total_roubos'],
+                [Sequelize.fn('AVG', Sequelize.col('pop_circ')), 'pop_circ'],
+                [Sequelize.fn('SUM', Sequelize.col('taxa_total_roubos')), 'taxa_total_roubos']
             ],
             where: filtro,
             group: ['cisp', 'ano'],
@@ -91,11 +93,23 @@ api.get('/roubos/roubo_acumulado', async (req, res) => {
             raw: true,
         });
 
-        const registros = roubos.map(r => ({
-            cisp: r.cisp,
-            ano: Number(r.ano),
-            total_roubos: Number(r.total_roubos)
-        }));
+        const registros = roubos.map(r => {
+            const total = Number(r.total_roubos) || 0;
+            const pop = Number(r.pop_circ) || 0;
+            const taxa = (r.taxa_total_roubos !== undefined && r.taxa_total_roubos !== null && Number(r.taxa_total_roubos) > 0)
+                ? Number(r.taxa_total_roubos)
+                : (pop > 0 ? (total / pop) * 100000 : 0);
+
+            return {
+                cisp: r.cisp,
+                ano: Number(r.ano),
+                total: total,
+                total_roubos: total,
+                taxa: Number(taxa.toFixed(2)),
+                taxa_total_roubos: Number(taxa.toFixed(2)),
+                pop_circ: pop > 0 ? Number(pop.toFixed(2)) : null
+            };
+        });
 
         const anos = [...new Set(registros.map(r => r.ano))].sort((a, b) => a - b);
 
@@ -118,18 +132,32 @@ api.get('/roubos/total_homicidios', async (req, res) => {
             attributes: [
                 'cisp',
                 'ano',
-                [Sequelize.literal('SUM(hom_doloso) + SUM(hom_por_interv_policial) + SUM(hom_culposo)'), 'total_homicidios']
+                [Sequelize.literal('SUM(hom_doloso) + SUM(hom_por_interv_policial) + SUM(hom_culposo)'), 'total_homicidios'],
+                [Sequelize.fn('AVG', Sequelize.col('pop_circ')), 'pop_circ'],
+                [Sequelize.literal('SUM(COALESCE(taxa_hom_doloso, 0)) + SUM(COALESCE(taxa_letalidade_violenta, 0))'), 'taxa_homicidios']
             ],
             group: ['cisp', 'ano'],
             order: [['ano', 'ASC']],
             raw: true,
         });
 
-        const registros = homi.map(r => ({
-            cisp: r.cisp,
-            ano: Number(r.ano),
-            total_homicidios: Number(r.total_homicidios)
-        }));
+        const registros = homi.map(r => {
+            const total = Number(r.total_homicidios) || 0;
+            const pop = Number(r.pop_circ) || 0;
+            const taxa = (pop > 0)
+                ? (total / pop) * 100000
+                : ((r.taxa_homicidios !== undefined && r.taxa_homicidios !== null) ? Number(r.taxa_homicidios) : 0);
+
+            return {
+                cisp: r.cisp,
+                ano: Number(r.ano),
+                total: total,
+                total_homicidios: total,
+                taxa: Number(taxa.toFixed(2)),
+                taxa_total_homicidios: Number(taxa.toFixed(2)),
+                pop_circ: pop > 0 ? Number(pop.toFixed(2)) : null
+            };
+        });
 
         const anos = [...new Set(registros.map(r => r.ano))].sort((a, b) => a - b);
 
