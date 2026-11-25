@@ -4,6 +4,10 @@ function criarMapaCisp(config) {
     const campoMetrica = (config && config.campoMetrica) ? config.campoMetrica : null;
     const urlDados = (config && config.urlDados) ? config.urlDados : null;
 
+    LIMITES_RJ = new L.LatLngBounds(
+        new L.LatLng(-20.17963128083118, -39.3145993678041),
+        new L.LatLng(-24.648544738133587, -45.80258164312095)
+    );
     const CENTRO_RJ = [-22.90351847, -43.19153696];
 
     // Escala de cores do mapa de calor
@@ -95,6 +99,9 @@ function criarMapaCisp(config) {
 
     // Inicializa o mapa Leaflet
     mapa = L.map(elementoId, {
+        maxBounds: LIMITES_RJ,
+        minZoom: 8,
+        maxZoom: 18,
         zoomControl: false,
         preferCanvas: true,
         renderer: rendererCanvas

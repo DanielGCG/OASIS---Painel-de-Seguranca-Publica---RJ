@@ -88,7 +88,17 @@
 
     // Inicializa o mapa leaflet
     function inicializarMapa() {
-        mapa = L.map('mapa', { zoomControl: false }).setView(CENTRO_RJ, 11);
+        LIMITES_RJ = new L.LatLngBounds(
+            new L.LatLng(-20.17963128083118, -39.3145993678041),
+            new L.LatLng(-24.648544738133587, -45.80258164312095)
+        );
+
+        mapa = L.map('mapa', {
+            maxBounds: LIMITES_RJ,
+            minZoom: 8,
+            maxZoom: 18, 
+            zoomControl: false 
+        }).setView(CENTRO_RJ, 11);
         L.control.zoom({ position: 'bottomright' }).addTo(mapa);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
