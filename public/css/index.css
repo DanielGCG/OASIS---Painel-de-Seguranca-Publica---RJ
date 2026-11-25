@@ -17,28 +17,6 @@ body {
     background: #dbe8e5;
 }
 
-.painel-batalhoes {
-    z-index: 500;
-    width: min(340px, calc(100% - 2rem));
-    max-height: calc(100% - 2rem);
-    overflow: auto;
-}
-
-.rotulo-cisp {
-    align-items: center;
-    background: #fff;
-    border: 2px solid #1976d2;
-    padding: 0px;
-    margin: 0px;
-    color: #12549a;
-    display: flex;
-    font-size: 10px;
-    font-weight: 700;
-    justify-content: center;
-    line-height: 1.2;
-    text-align: center;
-}
-
 @media (max-width: 760px) {
     .titulo {
         font-size: 3rem;
@@ -58,4 +36,33 @@ body {
     background-color: #2b2b2a;
     color: #fed085;
     border: 1px solid rgba(254, 208, 133, 0.4);
+}
+
+/* Tema do noUiSlider */
+#sliderAnos.noUi-target {
+    background: #383836;
+    border: none;
+    box-shadow: none;
+    height: 6px;
+}
+
+#sliderAnos .noUi-connect {
+    background: #fed085;
+}
+
+#sliderAnos .noUi-handle {
+    width: 18px;
+    height: 18px;
+    right: -9px;
+    top: -6px;
+    border-radius: 50%;
+    background: #fed085;
+    border: 2px solid #20201f;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+#sliderAnos .noUi-handle::before,
+#sliderAnos .noUi-handle::after {
+    display: none;
 }

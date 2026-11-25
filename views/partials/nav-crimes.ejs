@@ -1,9 +1,12 @@
-<!-- Navegação entre Tipos de Crime (Bootstrap) -->
+<!-- Navegação entre Tipos de Crime -->
 <section class="border-top py-2" aria-label="Indicador de crime exibido">
     <div class="d-flex flex-wrap gap-2">
-        <a href="/tiroteios" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'tiroteios') ? 'btn-dark' : 'btn-outline-secondary' %>">Tiroteios</a>
-        <a href="/roubos" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'roubos') ? 'btn-dark' : 'btn-outline-secondary' %>">Roubos</a>
-        <a href="/homicidios" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'homicidios') ? 'btn-dark' : 'btn-outline-secondary' %>">Homicídios</a>
-        <a href="/outros" class="btn rounded-0 <%= (typeof crimeAtual !== 'undefined' && crimeAtual === 'outros') ? 'btn-dark' : 'btn-outline-secondary' %>">Outros crimes</a>
+        <% (itensNavegacao || []).forEach(function (item) {
+            const ativo = (typeof crimeAtual !== 'undefined' && crimeAtual === item.slug);
+        %>
+            <a href="<%= item.href %>"
+               class="btn rounded-0 <%= ativo ? 'btn-light fw-semibold' : 'btn-outline-secondary' %>"
+               <%= ativo ? 'aria-current="page"' : '' %>><%= item.nome %></a>
+        <% }); %>
     </div>
 </section>

@@ -1,7 +1,10 @@
-function inicializarSliderAnos(config) {
-    const elAlcaA = document.getElementById('sliderHandleA');
-    const elAlcaB = document.getElementById('sliderHandleB');
-    const elProgresso = document.getElementById('sliderProgresso');
+function inicializarSliderAnos(config = {}) {
+    const elSlider = document.getElementById('sliderAnos');
+    const anos = Array.isArray(config.anos) ? config.anos.slice() : [];
+    const aoMudar = config.aoMudar;
+
+    if (!elSlider || !anos.length) return null;
+
     const elRotuloInicio = document.getElementById('rotuloAnoInicio');
     const elRotuloFim = document.getElementById('rotuloAnoFim');
     const elBadgeQtd = document.getElementById('badgeQtdAnos');
@@ -9,141 +12,84 @@ function inicializarSliderAnos(config) {
     const elSpanMaxAno = document.getElementById('spanMaxAno');
     const botoesPreset = document.querySelectorAll('.botao-preset');
 
-    const anos = config ? config.anos : null;
-    const aoMudar = config ? config.aoMudar : null;
+    const maxIdx = anos.length - 1;
 
-    if (!elAlcaA || !elAlcaB || !anos || anos.length === 0) {
-        return null;
-    }
+    if (elSlider.noUiSlider) elSlider.noUiSlider.destroy();
 
-    const anosDisponiveis = anos.slice();
+    noUiSlider.create(elSlider, {
+        start: [0, maxIdx],
+        connect: true,
+        behaviour: 'drag-tap',
+        step: 1,
+        range: { min: 0, max: Math.max(1, maxIdx) }
+    });
+
+    if (maxIdx === 0) elSlider.setAttribute('disabled', true);
 
     function obterIntervalo() {
-        const idxA = Number(elAlcaA.value);
-        const idxB = Number(elAlcaB.value);
-        const inicioIdx = Math.min(idxA, idxB);
-        const fimIdx = Math.max(idxA, idxB);
-
+        const [a, b] = elSlider.noUiSlider.get().map(v => Math.min(maxIdx, Math.round(Number(v))));
+        const inicioIdx = Math.min(a, b);
+        const fimIdx = Math.max(a, b);
         return {
-            inicioAno: anosDisponiveis[inicioIdx],
-            fimAno: anosDisponiveis[fimIdx],
-            inicioIdx: inicioIdx,
-            fimIdx: fimIdx
+            inicioAno: anos[inicioIdx],
+            fimAno: anos[fimIdx],
+            inicioIdx,
+            fimIdx
         };
     }
 
     function alternarDestaqueBotoes(botaoAtivo) {
-        for (let i = 0; i < botoesPreset.length; i++) {
-            const b = botoesPreset[i];
+        botoesPreset.forEach(b => {
             b.classList.toggle('btn-dark', b === botaoAtivo);
             b.classList.toggle('btn-outline-secondary', b !== botaoAtivo);
-        }
+        });
     }
 
-    function atualizarVisual() {
-        if (anosDisponiveis.length === 0) return;
-
-        const intervalo = obterIntervalo();
-        const totalPassos = anosDisponiveis.length - 1;
-
-        if (elRotuloInicio) elRotuloInicio.textContent = intervalo.inicioAno;
-        if (elRotuloFim) elRotuloFim.textContent = intervalo.fimAno;
-
-        const qtdAnos = intervalo.fimIdx - intervalo.inicioIdx + 1;
-        if (elBadgeQtd) {
-            elBadgeQtd.textContent = qtdAnos + (qtdAnos > 1 ? ' anos' : ' ano');
-        }
-
-        const porcentagemPasso = totalPassos > 0 ? (100 / totalPassos) : 0;
-        if (elProgresso) {
-            elProgresso.style.marginLeft = (intervalo.inicioIdx * porcentagemPasso) + '%';
-            elProgresso.style.width = totalPassos > 0 ? ((intervalo.fimIdx - intervalo.inicioIdx) * porcentagemPasso) + '%' : '100%';
-        }
+    function atualizarRotulos() {
+        const { inicioAno, fimAno, inicioIdx, fimIdx } = obterIntervalo();
+        const qtd = fimIdx - inicioIdx + 1;
+        if (elRotuloInicio) elRotuloInicio.textContent = inicioAno;
+        if (elRotuloFim) elRotuloFim.textContent = fimAno;
+        if (elBadgeQtd) elBadgeQtd.textContent = qtd + (qtd > 1 ? ' anos' : ' ano');
     }
 
     function definirIntervalo(idxInicio, idxFim, dispararCallback) {
-        elAlcaA.value = Math.min(idxInicio, idxFim);
-        elAlcaB.value = Math.max(idxInicio, idxFim);
-        atualizarVisual();
-
-        if (dispararCallback && typeof aoMudar === 'function') {
-            const intervalo = obterIntervalo();
-            aoMudar(intervalo.inicioAno, intervalo.fimAno);
+        elSlider.noUiSlider.set([Math.min(idxInicio, idxFim), Math.max(idxInicio, idxFim)]);
+        if (dispararCallback && aoMudar) {
+            const { inicioAno, fimAno } = obterIntervalo();
+            aoMudar(inicioAno, fimAno);
         }
     }
 
-    // Configuração inicial dos limites
-    const totalPassos = anosDisponiveis.length - 1;
-    elAlcaA.min = 0;
-    elAlcaA.max = totalPassos;
-    elAlcaB.min = 0;
-    elAlcaB.max = totalPassos;
-
-    elAlcaA.value = 0;
-    elAlcaB.value = totalPassos;
-
-    if (elSpanMinAno) elSpanMinAno.textContent = anosDisponiveis[0];
-    if (elSpanMaxAno) elSpanMaxAno.textContent = anosDisponiveis[totalPassos];
-
+    if (elSpanMinAno) elSpanMinAno.textContent = anos[0];
+    if (elSpanMaxAno) elSpanMaxAno.textContent = anos[maxIdx];
     const btnInicial = document.querySelector('.botao-preset[data-preset="inicial"]');
-    if (btnInicial) btnInicial.textContent = anosDisponiveis[0];
+    if (btnInicial) btnInicial.textContent = anos[0];
 
     alternarDestaqueBotoes(document.querySelector('.botao-preset[data-preset="tudo"]'));
-    atualizarVisual();
 
-    // Eventos das alças do range
-    const alcas = [elAlcaA, elAlcaB];
-    for (let i = 0; i < alcas.length; i++) {
-        const alca = alcas[i];
+    elSlider.noUiSlider.on('update', atualizarRotulos);
+    elSlider.noUiSlider.on('change', function () {
+        alternarDestaqueBotoes(null);
+        if (aoMudar) {
+            const { inicioAno, fimAno } = obterIntervalo();
+            aoMudar(inicioAno, fimAno);
+        }
+    });
 
-        alca.onpointerdown = function () {
-            elAlcaA.style.zIndex = (alca === elAlcaA) ? 3 : 2;
-            elAlcaB.style.zIndex = (alca === elAlcaB) ? 3 : 2;
-        };
-
-        alca.oninput = function () {
-            atualizarVisual();
-        };
-
-        alca.onchange = function () {
-            alternarDestaqueBotoes(null);
-            atualizarVisual();
-            if (typeof aoMudar === 'function') {
-                const intervalo = obterIntervalo();
-                aoMudar(intervalo.inicioAno, intervalo.fimAno);
-            }
-        };
-    }
-
-    // Eventos dos botões de atalho (presets)
-    for (let i = 0; i < botoesPreset.length; i++) {
-        const btn = botoesPreset[i];
-
+    botoesPreset.forEach(btn => {
         btn.onclick = function () {
             alternarDestaqueBotoes(btn);
-            const passos = anosDisponiveis.length - 1;
-
             let inicio = 0;
-            let fim = passos;
+            let fim = maxIdx;
 
-            if (btn.dataset.preset === 'ultimos3') {
-                inicio = Math.max(0, passos - 2);
-                fim = passos;
-            } else if (btn.dataset.preset === 'ultimo1') {
-                inicio = passos;
-                fim = passos;
-            } else if (btn.dataset.preset === 'inicial') {
-                inicio = 0;
-                fim = 0;
-            }
+            if (btn.dataset.preset === 'ultimos3') inicio = Math.max(0, maxIdx - 2);
+            else if (btn.dataset.preset === 'ultimo1') inicio = maxIdx;
+            else if (btn.dataset.preset === 'inicial') fim = 0;
 
             definirIntervalo(inicio, fim, true);
         };
-    }
+    });
 
-    return {
-        obterIntervalo: obterIntervalo,
-        definirIntervalo: definirIntervalo,
-        atualizarVisual: atualizarVisual
-    };
+    return { obterIntervalo, definirIntervalo };
 }

@@ -1,0 +1,74 @@
+<main class="min-vh-100 py-md-4">
+    <div class="container-fluid px-3 px-md-5">
+
+        <!-- Cabeçalho -->
+        <%- include('../partials/header') %>
+
+        <!-- Seleção de Indicador / Crime -->
+        <%- include('../partials/nav-crimes') %>
+
+        <!-- Resumo do Indicador -->
+        <section class="pb-1" aria-live="polite">
+            <div class="d-flex align-items-baseline gap-2">
+                <strong id="totalOcorrencias" class="fs-2 fw-bold">--</strong>
+                <span id="rotuloTotalOcorrencias" class="text-uppercase text-secondary small"><%= analise.rotuloMetrica %></span>
+            </div>
+            <span class="text-secondary small"><%= analise.fonte %></span>
+        </section>
+
+        <!-- Intervalo de anos -->
+        <%- include('../partials/filtro-anos') %>
+
+        <!-- Gráfico de Evolução Anual -->
+        <section id="secaoGraficoEvolucao" class="card bg-dark bg-opacity-75 border-secondary rounded-0 mt-4 p-3 p-md-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+                <div>
+                    <h2 id="tituloGraficoEvolucao" class="h5 fw-bold text-light mb-1">Evolução anual da taxa — Estado do Rio de Janeiro</h2>
+                    <p class="text-secondary small mb-0">Taxa por 100 mil hab. &bull; Clique em uma CISP no mapa para visualizar a evolução isolada.</p>
+                </div>
+                <button id="btnLimparCisp" type="button" class="btn btn-sm btn-outline-light rounded-0 d-none">
+                    <i class="bi bi-x-lg me-1"></i>Ver estado inteiro
+                </button>
+            </div>
+            <div class="position-relative" style="height: 300px;">
+                <canvas id="graficoEvolucao"></canvas>
+                <div id="avisoGrafico" class="d-none position-absolute top-50 start-50 translate-middle text-secondary small text-center"></div>
+            </div>
+        </section>
+
+        <!-- Mapa por CISP -->
+        <section class="position-relative mt-4 mb-5">
+            <div id="mapa" class="mapa rounded-0"></div>
+            <div id="avisoMapa" class="d-none position-absolute top-50 start-50 translate-middle bg-black shadow px-4 py-3 text-center" style="z-index: 600; max-width: 380px;"></div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Scripts da página de análise por CISP -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="/js/slider-anos.js"></script>
+<script src="/js/grafico-evolucao.js"></script>
+<script src="/js/mapa-cisp.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const configAnalise = <%- JSON.stringify({
+        elementoId: 'mapa',
+        tetoEstatico: analise.tetoEstatico,
+        rotuloMetrica: analise.rotuloMetrica,
+        urlDados: analise.urlDados
+    }) %>;
+
+    let mapaInstancia = null;
+
+    const grafico = criarGraficoEvolucao({
+        aoLimparSelecao: () => mapaInstancia.limparSelecao()
+    });
+
+    mapaInstancia = criarMapaCisp({
+        ...configAnalise,
+        aoAtualizar: (estado) => grafico.atualizar(estado)
+    });
+});
+</script>

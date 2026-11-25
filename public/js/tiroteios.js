@@ -6,13 +6,13 @@
 
     // Escala de cores do mapa de calor
     const TABELA_CORES = [
-        { ints: 0.85, cor: '#4a0404' },
-        { ints: 0.70, cor: '#800000' },
-        { ints: 0.55, cor: '#b71c1c' },
-        { ints: 0.40, cor: '#d9534f' },
-        { ints: 0.30, cor: '#ef8354' },
-        { ints: 0.20, cor: '#f5d094' },
-        { ints: 0.10, cor: '#f8e5c5' }
+        { ints: 0.85, cor: '#7a0177' },
+        { ints: 0.70, cor: '#ae017e' },
+        { ints: 0.55, cor: '#dd3497' },
+        { ints: 0.40, cor: '#f768a1' },
+        { ints: 0.30, cor: '#fa9fb5' },
+        { ints: 0.20, cor: '#fcc5c0' },
+        { ints: 0.10, cor: '#feebe2' }
     ];
 
     // Elementos da tela
@@ -141,7 +141,7 @@
             const qtd = contagem[chave];
 
             // Descarta células com apenas 1 registro
-            if (qtd <= 1) continue;
+            if (qtd <= 10) continue;
 
             const limites = calcularBoundsGrade(chave);
             const cor = obterCorCalor(qtd, maximo);

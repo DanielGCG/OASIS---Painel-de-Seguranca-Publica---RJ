@@ -38,13 +38,13 @@ api.get('/tiroteios/ocorrencias_mapa', async (req, res) => {
 
     const anos = Array.from(conjuntoAnos).sort((a, b) => a - b);
 
-    cacheTiroteios = {
+    MapaTiroteiosCache = {
         timestamp: Date.now(),
         anos,
         pontosPorAno
     };
 
-    return res.json(cacheTiroteios);
+    return res.json(MapaTiroteiosCache);
 });
 
 // Consulta de numero de roubos acumulado num intervalo de anos, agrupado por CISP
@@ -103,10 +103,8 @@ api.get('/roubos/roubo_acumulado', async (req, res) => {
             return {
                 cisp: r.cisp,
                 ano: Number(r.ano),
-                total: total,
-                total_roubos: total,
+                total,
                 taxa: Number(taxa.toFixed(2)),
-                taxa_total_roubos: Number(taxa.toFixed(2)),
                 pop_circ: pop > 0 ? Number(pop.toFixed(2)) : null
             };
         });
@@ -151,10 +149,8 @@ api.get('/roubos/total_homicidios', async (req, res) => {
             return {
                 cisp: r.cisp,
                 ano: Number(r.ano),
-                total: total,
-                total_homicidios: total,
+                total,
                 taxa: Number(taxa.toFixed(2)),
-                taxa_total_homicidios: Number(taxa.toFixed(2)),
                 pop_circ: pop > 0 ? Number(pop.toFixed(2)) : null
             };
         });
