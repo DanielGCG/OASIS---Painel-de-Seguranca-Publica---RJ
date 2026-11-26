@@ -66,7 +66,8 @@ const ITENS_NAVEGACAO = [
         slug: analise.slug,
         nome: analise.nome,
         href: `/${analise.slug}`
-    }))
+    })),
+    { slug: 'municipios', nome: 'Municípios', href: '/municipios' },
 ];
 
 // Disponibiliza os itens de navegação para todas as views
@@ -99,6 +100,14 @@ router.get('/:analise', (req, res, next) => {
         title: analise.title,
         crimeAtual: analise.slug,
         analise
+    });
+});
+
+// Rota para análise por municípios
+router.get('/municipios', (req, res) => {
+    res.render('pages/municipios', {
+        title: 'Análise por Municípios - Painel de Segurança Pública RJ',
+        crimeAtual: 'municipios'
     });
 });
 

@@ -1,0 +1,39 @@
+<main class="min-vh-100 py-md-4">
+    <div class="container-fluid px-3 px-md-5">
+
+        <!-- Cabeçalho -->
+        <%- include('../partials/header') %>
+
+        <!-- Seleção de Indicador / Crime -->
+        <%- include('../partials/nav-crimes') %>
+
+        <!-- Resumo da Métrica -->
+        <section class="pb-1" aria-live="polite">
+            <span class="text-secondary small">Fonte: --- &bull;</span>
+        </section>
+
+        <!-- Intervalo de anos -->
+        <%- include('../partials/filtro-anos') %>
+
+        <!-- Mapa do Estado -->
+        <section class="position-relative mt-4">
+            <div id="mapa" class="mapa rounded-0"></div>
+            <div id="avisoMapa" class="d-none position-absolute top-50 start-50 translate-middle bg-black shadow px-4 py-3 text-center" style="z-index: 600; max-width: 360px;"></div>
+        </section>
+
+    </div>  
+</main>
+
+<!-- Scripts da página de análise por municípios -->
+<script src="/js/mapa-munic.js"></script>
+<script src="/js/slides-anos.js"></script>
+
+<!-- Scripts para inicializar o mapa -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    let mapaInstancia = null;
+
+    mapaInstancia = criarMapaMunic({elementoId: 'mapa'});
+});
+</script>
