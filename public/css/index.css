@@ -66,3 +66,49 @@ body {
 #sliderAnos .noUi-handle::after {
     display: none;
 }
+
+/* Layout 60% mapa | 40% gráficos nas páginas CISP */
+.grid-analise-cisp {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.coluna-graficos {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 1rem;
+}
+
+.coluna-graficos > section {
+    min-height: 260px;
+}
+
+.area-grafico {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.area-ranking-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+@media (min-width: 992px) {
+    .grid-analise-cisp {
+        grid-template-columns: 3fr 2fr;
+        align-items: stretch;
+    }
+
+    .coluna-graficos {
+        height: min(68vh, 720px);
+        min-height: 470px;
+    }
+
+    .coluna-graficos > section {
+        min-height: 0;
+        overflow: hidden;
+    }
+}

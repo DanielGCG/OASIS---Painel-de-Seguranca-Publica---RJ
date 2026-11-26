@@ -15,8 +15,8 @@ function criarGraficoEvolucao(config = {}) {
     function atualizar({ labels = [], valores = [], cispSelecionada } = {}) {
         if (elTitulo) {
             elTitulo.textContent = cispSelecionada
-                ? `Evolução anual da taxa — CISP ${cispSelecionada}`
-                : 'Evolução anual da taxa — Estado do Rio de Janeiro';
+                ? `Evolução anual da taxa - CISP ${cispSelecionada}`
+                : 'Evolução anual da taxa - Estado do Rio de Janeiro';
         }
         if (elBotaoLimpar) {
             elBotaoLimpar.classList.toggle('d-none', !cispSelecionada);
@@ -28,7 +28,7 @@ function criarGraficoEvolucao(config = {}) {
                 grafico = null;
             }
             if (elAviso) {
-                elAviso.textContent = 'Dados ainda não disponíveis para este indicador.';
+                elAviso.textContent = 'Dados ainda não disponíveis.';
                 elAviso.classList.remove('d-none');
             }
             return;
