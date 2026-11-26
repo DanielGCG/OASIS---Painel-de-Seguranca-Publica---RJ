@@ -107,8 +107,8 @@ function criarMapaCisp({ elementoId, rotuloMetrica, tetoEstatico, urlDados, aoAt
 
         div.innerHTML = `
             <div class="fw-semibold text-uppercase mb-1" style="font-size: 0.68rem;">Taxa Média Anual / 100 mil hab.</div>
-            <div class="border border-secondary-subtle rounded-1" style="height: 11px; width: 160px; background: linear-gradient(to right, rgba(255,255,255,0.4), rgb(235,160,160), rgb(215,80,80), rgb(190,10,10));"></div>
-            <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.65rem; width: 160px;">
+            <div class="w-100 border border-secondary-subtle rounded-1" style="height: 11px; background: linear-gradient(to right, rgba(255,255,255,0.4), rgb(235,160,160), rgb(215,80,80), rgb(190,10,10));"></div>
+            <div class="w-100 d-flex justify-content-between text-muted mt-1" style="font-size: 0.65rem;">
                 <span>0</span>
                 <span>${formatarNumero(meio)}</span>
                 <span>${formatarNumero(tetoReferenciaTaxa)}+</span>
